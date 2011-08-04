@@ -5,19 +5,27 @@
 	<artifactId>maven-python-test-plugin-test</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/scripts</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/test/scripts</directory>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration></configuration>
-			</plugin>
-			<plugin>
 				<groupId>maven-python-test-plugin</groupId>
-				<artifactId>maven-python-test-plugin</artifactId>
+				<artifactId>maven-python-test-plugin-external</artifactId>
 				<version>0.1-SNAPSHOT</version>
-				<configuration>
-					<program>nose</program>
-				</configuration>
 				<executions>
 					<execution>
 						<phase>test</phase>
@@ -29,4 +37,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+		</dependency>
+	</dependencies>
 </project>

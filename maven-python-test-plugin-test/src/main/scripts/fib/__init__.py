@@ -1,10 +1,6 @@
 
-def fib(n):
-	if n < 1:
-		raise Exception("Not defined for " + n)
-	if n == 1:
-		return 1
-	if n == 2:
-		return 1
-	return fib(n-1) + fib(n-2)
+from local.fib import Fibonacci
+
+def fibrange(n):
+	return [Fibonacci.calc(i) for i in range(1, n + 1)]
 
