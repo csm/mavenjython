@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>maven-python-test-plugin</groupId>
+	<artifactId>maven-python-test-plugin-test</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration></configuration>
+			</plugin>
+			<plugin>
+				<groupId>maven-python-test-plugin</groupId>
+				<artifactId>maven-python-test-plugin</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<configuration>
+					<program>nose</program>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>python</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
