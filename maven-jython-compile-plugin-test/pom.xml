@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>maven-jython-compile-plugin</groupId>
+	<artifactId>maven-jython-compile-plugin-test</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<name>Demo project for Jython compilation Maven Mojo</name>
+
+	<description>
+		Demonstrates the use of needing jython/python with a number of libraries.
+	</description>
+	<licenses>
+		<license>
+			<name>GPL 3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>GPL 2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>Apache Public License</name>
+			<url>http://www.apache.org/licenses/apache.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>johannes</id>
+			<name>Johannes Buchner</name>
+			<email>buchner.johannes@gmx.at</email>
+		</developer>
+	</developers>
+	<url>http://maven-python.sourceforge.net/jython/demo/</url>
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/jython/demo/</url>
+		</site>
+		<repository>
+			<id>sourceforge</id>
+			<name>SourceForge</name>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/repo/</url>
+		</repository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/maven-python/</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@maven-python.git.sourceforge.net/gitroot/maven-python/</developerConnection>
+		<url>http://maven-python.git.sourceforge.net/</url>
+	</scm>
+	<repositories>
+		<repository>
+			<id>maven repo</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>releases</id>
+			<url>http://maven-python.git.sourceforge.net/repo/</url>
+		</repository>
+	</repositories>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>maven-jython-compile-plugin</groupId>
+				<artifactId>maven-jython-compile-plugin</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jython</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<libraries>
+						<param>nose</param>
+					</libraries>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.python</groupId>
+			<artifactId>jython-standalone</artifactId>
+			<version>2.5.2</version>
+		</dependency>
+	</dependencies>
+</project>
