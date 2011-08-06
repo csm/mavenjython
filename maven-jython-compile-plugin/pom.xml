@@ -1,0 +1,150 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>maven-jython-compile-plugin</groupId>
+	<artifactId>maven-jython-compile-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<version>0.1-SNAPSHOT</version>
+	<name>Maven Jython packaging</name>
+
+	<description>
+		Adds a jython dependency to the project, and installs the 
+		necessary python libraries using easy_install.
+	</description>
+	<licenses>
+		<license>
+			<name>GPL 3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>GPL 2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>Apache Public License</name>
+			<url>http://www.apache.org/licenses/apache.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>johannes</id>
+			<name>Johannes Buchner</name>
+			<email>buchner.johannes@gmx.at</email>
+		</developer>
+	</developers>
+	<url>http://maven-python.sourceforge.net/jython/</url>
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/jython/</url>
+		</site>
+		<repository>
+			<id>sourceforge</id>
+			<name>SourceForge</name>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/repo/</url>
+		</repository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/maven-python/</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@maven-python.git.sourceforge.net/gitroot/maven-python/</developerConnection>
+		<url>http://maven-python.git.sourceforge.net/</url>
+	</scm>
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://maven-python.git.sourceforge.net/repo/</url>
+		</repository>
+		<repository>
+			<id>maven repo</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.python</groupId>
+			<artifactId>jython-standalone</artifactId>
+			<version>2.5.2</version>
+		</dependency>
+		<!-- maven stuff -->
+
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-model</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>2.2.1</version>
+			<type>maven-plugin</type>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<mavenVersion>2.2.1</mavenVersion>
+	</properties>
+
+	<build>
+		<plugins><!-- 
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>
+
+					</descriptor>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>-->
+		</plugins>
+	</build>
+</project>
