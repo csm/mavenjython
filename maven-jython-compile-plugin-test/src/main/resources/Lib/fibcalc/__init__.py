@@ -1,10 +1,12 @@
 
 print "Python started."
 
-from com.jakeapp import FibSequenceCalc
+from maven.jython.compile.plugin.test import FibSequenceCalc
+
+import nose
 
 def main():
 	fc = FibSequenceCalc()
-	print [fc.calc() for i in range(n)]
+	print dir(nose)
+	print [fc.calc() for i in dir(nose)]
 
-print "Python exiting."

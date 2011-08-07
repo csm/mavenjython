@@ -80,6 +80,54 @@
 					</libraries>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>InitJython</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+        
+        <plugin>
+          <groupId>org.codehaus.izpack</groupId>
+          <artifactId>izpack-maven-plugin</artifactId>
+          <version>5.0.0-beta8</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>izpack</goal>
+              </goals>
+              <configuration>
+                 <izpackBasedir>target/izpack-staging</izpackBasedir>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.izpack</groupId>
+              <artifactId>izpack-standalone-compiler</artifactId>
+              <version>3.4.3</version>
+            </dependency>
+          </dependencies>
+        </plugin>
 		</plugins>
 	</build>
 	<dependencies>

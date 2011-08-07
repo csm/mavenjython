@@ -44,6 +44,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @phase compile
  */
 public class JythonMojo extends AbstractMojo {
+	private static final String SETUPTOOLS_EGG = "setuptools-0.6c11-py2.5.egg";
 	/**
 	 * @parameter expression="${project.build.testOutputDirectory}"
 	 * @required
@@ -91,7 +92,15 @@ public class JythonMojo extends AbstractMojo {
 	 * @parameter expression="${jython.includeJython}" default="false"
 	 */
 	private boolean includeJython;
+
 	private File jythonFakeExecutable;
+
+	/**
+	 * Should we override files during extraction if they already exist?
+	 * 
+	 * if true: will never work on tainted files; if false: will be faster.
+	 */
+	private static final boolean OVERRIDE = false;
 
 	public void execute() throws MojoExecutionException {
 		if (temporaryBuildDirectory == null) {
@@ -101,12 +110,14 @@ public class JythonMojo extends AbstractMojo {
 
 		// all we have to do is to run nose on the source directory
 		/**
-		 * Strategy A: include jython in plugin. Extract on the run
+		 * Strategy A: include jython in plugin. Extract on the run.
 		 * 
 		 * Strategy B: Project also has dependency on jython. We find that jar
-		 * and extract it and work from there. B has the benefit that we don't
-		 * have to update this plugin for every version and the user needs the
-		 * jython dependency anyway to call the Python Console
+		 * and extract it and work from there.
+		 * 
+		 * B has the benefit that we don't have to update this plugin for every
+		 * version and the user needs the jython dependency anyway to call the
+		 * Python Console
 		 * 
 		 */
 		DefaultArtifact artifact = getJython();
@@ -114,8 +125,6 @@ public class JythonMojo extends AbstractMojo {
 			throw new MojoExecutionException("I expected " + artifact
 					+ " to provide a jar, but got " + artifact.getFile());
 		}
-		waitForUser();
-
 		Collection<File> jythonFiles = extractJarToDirectory(
 				artifact.getFile(), outputDirectory);
 		jythonFakeExecutable = new File(outputDirectory, "jython");
@@ -125,32 +134,46 @@ public class JythonMojo extends AbstractMojo {
 			throw new MojoExecutionException("couldn't create file", e);
 		}
 
-		waitForUser();
-
 		// now what? we have the jython content, now we need
 		// easy_install
 		getLog().info("installing easy_install ...");
-		URL res = getClass().getResource("setuptools-0.6c11.jar");
+		URL res = getClass().getResource(SETUPTOOLS_EGG);
 		if (res == null)
 			throw new MojoExecutionException(
-					"resource setuptools-0.6c11.jar not found");
-		File setuptoolsJar = new File(outputDirectory, "setuptools.jar");
+					"resource setuptools egg not found");
+		File libdir = new File(outputDirectory, "Lib");
+		File setuptoolsJar = new File(temporaryBuildDirectory, SETUPTOOLS_EGG);
 		try {
-			FileUtils.copyInputStreamToFile(res.openStream(), setuptoolsJar);
+			if (OVERRIDE || !setuptoolsJar.exists()) {
+				FileUtils
+						.copyInputStreamToFile(res.openStream(), setuptoolsJar);
+			}
 		} catch (IOException e) {
 			throw new MojoExecutionException("copying setuptools failed", e);
 		}
-		extractJarToDirectory(setuptoolsJar, new File(outputDirectory, "Lib"));
+		// we could add the files from setuptools to the jythonFiles (marked for deletion)
+		// however, if we do that, a includeJython and a !includeJython package are different:
+		// the first has setuptools, the second doesn't. It's not a bad idea to distribute
+		// Jython with setuptools.
+		// jythonFiles.addAll
+		extractJarToDirectory(setuptoolsJar, new File(new File(libdir,
+				"site-packages"), SETUPTOOLS_EGG));
+		try {
+			IOUtils.write("./" + SETUPTOOLS_EGG + "\n", new FileOutputStream(
+					new File(new File(libdir, "site-packages"),
+							"setuptools.pth")));
+		} catch (IOException e) {
+			throw new MojoExecutionException(
+					"writing path entry for setuptools failed", e);
+		}
 		getLog().info("installing easy_install done");
-
-		waitForUser();
 
 		getLog().info("installing requested libraries");
 		// then we need to call easy_install to install the other dependencies.
-		runJythonScriptOnInstall(outputDirectory, getEasyInstallArgs());
+		runJythonScriptOnInstall(outputDirectory,
+				getEasyInstallArgs("Lib/site-packages/" + SETUPTOOLS_EGG
+						+ "/easy_install.py"));
 		getLog().info("installing requested libraries done");
-
-		waitForUser();
 
 		if (!includeJython) {
 			for (File f : jythonFiles) {
@@ -168,17 +191,7 @@ public class JythonMojo extends AbstractMojo {
 		 */
 	}
 
-	private void waitForUser() {
-		try {
-			System.out.print("press a key to continue: ");
-			System.out.flush();
-			System.in.read();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private List<String> getEasyInstallArgs() {
+	private List<String> getEasyInstallArgs(String easy_install_script) {
 		List<String> args = new ArrayList<String>();
 
 		// I want to launch
@@ -192,9 +205,9 @@ public class JythonMojo extends AbstractMojo {
 				+ jythonFakeExecutable.getAbsolutePath());
 		args.add("org.python.util.jython");
 		// and it should run easy_install
-		args.add("Lib/easy_install.py");
+		args.add(easy_install_script);
 		// with some arguments
-		args.add("--optimize");
+		//args.add("--optimize");
 		// and cache here
 		args.add("--build-directory");
 		args.add(temporaryBuildDirectory.getAbsolutePath());
@@ -274,14 +287,16 @@ public class JythonMojo extends AbstractMojo {
 			if (!el.isDirectory()) {
 				File destFile = new File(outputDirectory, el.getName());
 				// destFile = new File(outputDirectory, destFile.getName());
-				destFile.getParentFile().mkdirs();
-				try {
-					IOUtils.copy(ja.getInputStream(el), new FileOutputStream(
-							destFile));
-				} catch (IOException e) {
-					throw new MojoExecutionException(
-							"extracting " + el.getName()
-									+ " from jython artifact jar failed", e);
+				if (OVERRIDE || !destFile.exists()) {
+					destFile.getParentFile().mkdirs();
+					try {
+						IOUtils.copy(ja.getInputStream(el),
+								new FileOutputStream(destFile));
+					} catch (IOException e) {
+						throw new MojoExecutionException("extracting "
+								+ el.getName()
+								+ " from jython artifact jar failed", e);
+					}
 				}
 				files.add(destFile);
 			}
