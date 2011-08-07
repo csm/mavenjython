@@ -1,28 +1,79 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>maven-python-test-plugin</groupId>
-  <artifactId>maven-python-test-plugin-external</artifactId>
-  <packaging>maven-plugin</packaging>
-  <version>0.1-SNAPSHOT</version>
-  <name>maven-python-test-plugin Maven Mojo</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-    	<groupId>commons-io</groupId>
-    	<artifactId>commons-io</artifactId>
-    	<version>2.0.1</version>
-    </dependency>
-  </dependencies>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>maven-python-test-plugin</groupId>
+	<artifactId>maven-python-test-plugin-external</artifactId>
+	<packaging>maven-plugin</packaging>
+	<version>1.0</version>
+	<name>Python tests Maven Mojo</name>
+
+	<description>
+		Executes an external program (nose by default) that runs python tests.
+		Allows verification and behavior testing of python and jython projects.  
+	</description>
+	<licenses>
+		<license>
+			<name>GPL 3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>GPL 2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>Apache Public License</name>
+			<url>http://www.apache.org/licenses/apache.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>johannes</id>
+			<name>Johannes Buchner</name>
+			<email>buchner.johannes@gmx.at</email>
+		</developer>
+	</developers>
+	<url>http://maven-python.sourceforge.net/</url>
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/</url>
+		</site>
+		<repository>
+			<id>sourceforge</id>
+			<name>SourceForge</name>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/repo/</url>
+		</repository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/maven-python/</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@maven-python.git.sourceforge.net/gitroot/maven-python/</developerConnection>
+		<url>http://maven-python.git.sourceforge.net/</url>
+	</scm>
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://maven-python.git.sourceforge.net/repo/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+	</dependencies>
 </project>

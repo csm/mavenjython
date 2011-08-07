@@ -3,7 +3,59 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>maven-python-test-plugin</groupId>
 	<artifactId>maven-python-test-plugin-test</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>1.0</version>
+	<name>Demo project for Python tests Maven Mojo</name>
+
+	<description>
+		Demonstrates the use of python tests using nose, behavior tests using freshen (a cucumber clone), and plain java junit tests.
+	</description>
+	<licenses>
+		<license>
+			<name>GPL 3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>GPL 2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>Apache Public License</name>
+			<url>http://www.apache.org/licenses/apache.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>johannes</id>
+			<name>Johannes Buchner</name>
+			<email>buchner.johannes@gmx.at</email>
+		</developer>
+	</developers>
+	<url>http://maven-python.sourceforge.net/demo/</url>
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/demo/</url>
+		</site>
+		<repository>
+			<id>sourceforge</id>
+			<name>SourceForge</name>
+			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/repo/</url>
+		</repository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/maven-python/</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@maven-python.git.sourceforge.net/gitroot/maven-python/</developerConnection>
+		<url>http://maven-python.git.sourceforge.net/</url>
+	</scm>
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://maven-python.git.sourceforge.net/repo/</url>
+		</repository>
+	</repositories>
 	<build>
 		<resources>
 			<resource>
