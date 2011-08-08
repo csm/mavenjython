@@ -17,6 +17,7 @@ package com.jakeapp.python;
  */
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,9 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -46,24 +50,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class JythonMojo extends AbstractMojo {
 	private static final String SETUPTOOLS_EGG = "setuptools-0.6c11-py2.5.egg";
 	/**
-	 * @parameter expression="${project.build.testOutputDirectory}"
-	 * @required
-	 */
-	private File testOutputDirectory;
-	/**
 	 * @parameter expression="${project.build.outputDirectory}"
 	 * @required
 	 */
 	private File outputDirectory;
 
 	/**
-	 * @parameter expression="${project.build.scriptSourceDirectory}"
-	 * @required
-	 */
-	private File scriptDirectory;
-
-	/**
-	 * Executable program to run for test.
+	 * Libraries needed to include.
 	 * 
 	 * @parameter expression="${jython.libraries}"
 	 * @optional
@@ -71,29 +64,50 @@ public class JythonMojo extends AbstractMojo {
 	private List<String> libraries;
 
 	/**
-	 * Cache to download and build python packages
+	 * Caching directory to download and build python packages, as well as
+	 * extracted jython dir
 	 * 
 	 * @parameter expression="${jython.temporaryDirectory}"
-	 *            default="target/jython-plugins-tmp"
+	 *            default="target/jython-build-tmp"
 	 * @optional
 	 */
 	private File temporaryBuildDirectory;
 
 	/**
-	 * Dependencies.
+	 * Dependencies. Will be searched for jython
 	 * 
 	 * @parameter expression="${plugin.artifacts}"
 	 */
 	private List<DefaultArtifact> pluginArtifacts;
 
 	/**
-	 * Include jython
-	 * 
-	 * @parameter expression="${jython.includeJython}" default="false"
+	 * Lib/
 	 */
-	private boolean includeJython;
-
-	private File jythonFakeExecutable;
+	private File libdir;
+	/**
+	 * Lib/ in the output
+	 */
+	private File installlibdir;
+	/**
+	 * The Jython dependency
+	 */
+	private DefaultArtifact jythonArtifact;
+	/**
+	 * The setuptools jar resource
+	 */
+	private URL setuptoolsResource;
+	/**
+	 * The setuptools jar, once copied from the resource
+	 */
+	private File setuptoolsJar;
+	/**
+	 * Lib/site-packages
+	 */
+	private File sitepackagesdir;
+	/**
+	 * Where packages are downloaded and built
+	 */
+	private File packageDownloadCacheDir;
 
 	/**
 	 * Should we override files during extraction if they already exist?
@@ -102,66 +116,61 @@ public class JythonMojo extends AbstractMojo {
 	 */
 	private static final boolean OVERRIDE = false;
 
-	public void execute() throws MojoExecutionException {
+	private void setupVariables() throws MojoExecutionException {
 		if (temporaryBuildDirectory == null) {
 			temporaryBuildDirectory = new File("target/jython-plugins-tmp");
 		}
 		temporaryBuildDirectory.mkdirs();
+		packageDownloadCacheDir = new File(temporaryBuildDirectory, "build");
+		packageDownloadCacheDir.mkdir();
+		libdir = new File(temporaryBuildDirectory, "Lib");
+		installlibdir = new File(outputDirectory, "Lib");
 
-		// all we have to do is to run nose on the source directory
-		/**
-		 * Strategy A: include jython in plugin. Extract on the run.
-		 * 
-		 * Strategy B: Project also has dependency on jython. We find that jar
-		 * and extract it and work from there.
-		 * 
-		 * B has the benefit that we don't have to update this plugin for every
-		 * version and the user needs the jython dependency anyway to call the
-		 * Python Console
-		 * 
-		 */
-		DefaultArtifact artifact = getJython();
-		if (!artifact.getFile().getName().endsWith(".jar")) {
-			throw new MojoExecutionException("I expected " + artifact
-					+ " to provide a jar, but got " + artifact.getFile());
+		jythonArtifact = findJythonArtifact();
+		if (!jythonArtifact.getFile().getName().endsWith(".jar")) {
+			throw new MojoExecutionException("I expected " + jythonArtifact
+					+ " to provide a jar, but got " + jythonArtifact.getFile());
 		}
-		Collection<File> jythonFiles = extractJarToDirectory(
-				artifact.getFile(), outputDirectory);
-		jythonFakeExecutable = new File(outputDirectory, "jython");
-		try {
-			jythonFakeExecutable.createNewFile();
-		} catch (IOException e) {
-			throw new MojoExecutionException("couldn't create file", e);
-		}
+
+		setuptoolsResource = getClass().getResource(SETUPTOOLS_EGG);
+		if (setuptoolsResource == null)
+			throw new MojoExecutionException(
+					"resource setuptools egg not found");
+		setuptoolsJar = new File(packageDownloadCacheDir, SETUPTOOLS_EGG);
+		sitepackagesdir = new File(libdir, "site-packages");
+	}
+
+	/**
+	 * Strategy A: include jython in plugin. Extract on the run.
+	 * 
+	 * Strategy B: Project also has dependency on jython. We find that jar and
+	 * extract it and work from there.
+	 * 
+	 * B has the benefit that we don't have to update this plugin for every
+	 * version and the user needs the jython dependency anyway to call the
+	 * Python Console
+	 */
+	public void execute() throws MojoExecutionException {
+		setupVariables();
+
+		extractJarToDirectory(jythonArtifact.getFile(), temporaryBuildDirectory);
 
 		// now what? we have the jython content, now we need
 		// easy_install
 		getLog().info("installing easy_install ...");
-		URL res = getClass().getResource(SETUPTOOLS_EGG);
-		if (res == null)
-			throw new MojoExecutionException(
-					"resource setuptools egg not found");
-		File libdir = new File(outputDirectory, "Lib");
-		File setuptoolsJar = new File(temporaryBuildDirectory, SETUPTOOLS_EGG);
 		try {
 			if (OVERRIDE || !setuptoolsJar.exists()) {
-				FileUtils
-						.copyInputStreamToFile(res.openStream(), setuptoolsJar);
+				FileUtils.copyInputStreamToFile(
+						setuptoolsResource.openStream(), setuptoolsJar);
 			}
 		} catch (IOException e) {
 			throw new MojoExecutionException("copying setuptools failed", e);
 		}
-		// we could add the files from setuptools to the jythonFiles (marked for deletion)
-		// however, if we do that, a includeJython and a !includeJython package are different:
-		// the first has setuptools, the second doesn't. It's not a bad idea to distribute
-		// Jython with setuptools.
-		// jythonFiles.addAll
-		extractJarToDirectory(setuptoolsJar, new File(new File(libdir,
-				"site-packages"), SETUPTOOLS_EGG));
+		extractJarToDirectory(setuptoolsJar, new File(sitepackagesdir,
+				SETUPTOOLS_EGG));
 		try {
 			IOUtils.write("./" + SETUPTOOLS_EGG + "\n", new FileOutputStream(
-					new File(new File(libdir, "site-packages"),
-							"setuptools.pth")));
+					new File(sitepackagesdir, "setuptools.pth")));
 		} catch (IOException e) {
 			throw new MojoExecutionException(
 					"writing path entry for setuptools failed", e);
@@ -170,20 +179,49 @@ public class JythonMojo extends AbstractMojo {
 
 		getLog().info("installing requested libraries");
 		// then we need to call easy_install to install the other dependencies.
-		runJythonScriptOnInstall(outputDirectory,
+		runJythonScriptOnInstall(temporaryBuildDirectory,
 				getEasyInstallArgs("Lib/site-packages/" + SETUPTOOLS_EGG
 						+ "/easy_install.py"));
 		getLog().info("installing requested libraries done");
 
-		if (!includeJython) {
-			for (File f : jythonFiles) {
-				f.delete();
+		getLog().info("copying requested libraries");
+		/**
+		 * we installed the packages into our temporary build directory now we
+		 * want to move these libraries into outputDirectory/Lib
+		 * 
+		 * <pre>
+		 * mv --no-override temporaryBuildDirectory/Lib/site-packages/*.egg/* outputDirectory/Lib/
+		 * </pre>
+		 */
+		for (File i : sitepackagesdir.listFiles((FileFilter) new AndFileFilter(
+				DirectoryFileFilter.INSTANCE, new SuffixFileFilter(".egg")))) {
+			getLog().info(
+					"copying " + i + " into "
+							+ new File(outputDirectory, "Lib"));
+			try {
+				FileUtils.deleteDirectory(new File(installlibdir, i.getName()));
+			} catch (IOException e) {
+			}
+			try {
+				FileUtils.copyDirectory(i, installlibdir);
+			} catch (IOException e) {
+				throw new MojoExecutionException("copying " + i + " to "
+						+ new File(outputDirectory, "Lib") + " failed", e);
 			}
 		}
 
-		/*
-		 * If the project does not want its python sources to be in Lib/
-		 * it needs to call 
+		/**
+		 * Setuptools installs a site.py for every package. This might conflict
+		 * with the jython installation. All it does anyway is help look for
+		 * eggs, so it wouldn't help us. Errors are ignored here.
+		 */
+		new File(installlibdir, "site.py").delete();
+		new File(installlibdir, "site$py.class").delete();
+		getLog().info("copying requested libraries done");
+
+		/**
+		 * If the project does not want its python sources to be in Lib/ it
+		 * needs to call
 		 * 
 		 * PySystemState.addPaths(path, jarFileName + "/myLibFolder");
 		 * 
@@ -191,7 +229,8 @@ public class JythonMojo extends AbstractMojo {
 		 */
 	}
 
-	private List<String> getEasyInstallArgs(String easy_install_script) {
+	private List<String> getEasyInstallArgs(String easy_install_script)
+			throws MojoExecutionException {
 		List<String> args = new ArrayList<String>();
 
 		// I want to launch
@@ -200,17 +239,24 @@ public class JythonMojo extends AbstractMojo {
 		args.add("-cp");
 		args.add("." + getClassPathSeparator() + "Lib");
 		// which should know about itself
-		args.add("-Dpython.home=" + outputDirectory.getAbsolutePath());
-		args.add("-Dpython.executable="
-				+ jythonFakeExecutable.getAbsolutePath());
+		args.add("-Dpython.home=.");
+		File jythonFakeExecutable = new File(temporaryBuildDirectory, "jython");
+		try {
+			jythonFakeExecutable.createNewFile();
+		} catch (IOException e) {
+			throw new MojoExecutionException("couldn't create file", e);
+		}
+		args.add("-Dpython.executable=" + jythonFakeExecutable.getName());
 		args.add("org.python.util.jython");
 		// and it should run easy_install
 		args.add(easy_install_script);
 		// with some arguments
 		//args.add("--optimize");
+		// args.add("--install-dir");
+		// args.add(outputDirectory.getAbsolutePath());
 		// and cache here
 		args.add("--build-directory");
-		args.add(temporaryBuildDirectory.getAbsolutePath());
+		args.add(packageDownloadCacheDir.getAbsolutePath());
 		// and install these libraries
 		args.addAll(libraries);
 
@@ -304,7 +350,7 @@ public class JythonMojo extends AbstractMojo {
 		return files;
 	}
 
-	private DefaultArtifact getJython() throws MojoExecutionException {
+	private DefaultArtifact findJythonArtifact() throws MojoExecutionException {
 		for (DefaultArtifact i : pluginArtifacts) {
 			if (i.getArtifactId().equals("jython-standalone")
 					&& i.getGroupId().equals("org.python")) {

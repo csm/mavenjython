@@ -1,14 +1,13 @@
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Properties;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 
-import org.python.core.Py;
-import org.python.core.PyException;
-import org.python.core.PyFile;
-import org.python.core.PySystemState;
-import org.python.core.imp;
-import org.python.util.InteractiveConsole;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import jline.ConsoleReader;
+
 import org.python.util.JLineConsole;
 
 /**
@@ -22,61 +21,19 @@ import org.python.util.JLineConsole;
  * @author user
  * 
  */
-public class InitJython {
-	private static InteractiveConsole newInterpreter(boolean interactiveStdin) {
-		if (!interactiveStdin) {
-			return new InteractiveConsole();
-		}
+public class InitJython extends AbstractJythonInit {
 
-		String interpClass = PySystemState.registry.getProperty(
-				"python.console", "");
-		if (interpClass.length() > 0) {
-			try {
-				return (InteractiveConsole) Class.forName(interpClass)
-						.newInstance();
-			} catch (Throwable t) {
-				// fall through
-			}
-		}
-		return new JLineConsole();
+	public InitJython(String[] args) {
+		super(args);
 	}
 
-	public static void main(String[] args) throws PyException {
-		System.out.println("Java started.");
+	public static void main(String[] args) throws ScriptException {
+		System.out.println("Java started");
+		new InitJython(args).run();
+		System.out.println("Java exiting");
+	}
 
-		System.out.println("Setting python home.");
-		if (System.getProperty("python.home") == null) {
-			URL dirURL = InitJython.class.getClassLoader().getResource(".");
-			if (dirURL != null && dirURL.getProtocol().equals("file")) {
-				try {
-					System.setProperty("python.home",
-							new File(dirURL.toURI()).getPath());
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-				}
-			} else {
-				System.err.println("URL for . is " + dirURL);
-			}
-		}
-
-		PySystemState.initialize(PySystemState.getBaseProperties(),
-				new Properties(), args);
-
-		PySystemState systemState = Py.getSystemState();
-
-		// Decide if stdin is interactive
-		boolean interactive = ((PyFile) Py.defaultSystemState.stdin).isatty();
-		if (!interactive) {
-			systemState.ps1 = systemState.ps2 = Py.EmptyString;
-		}
-
-		// Now create an interpreter
-		InteractiveConsole interp = newInterpreter(interactive);
-		systemState.__setattr__("_jy_interpreter", Py.java2py(interp));
-
-		imp.load("site");
-
-		InteractiveConsole c = interp;
+	public void run() throws ScriptException {
 		System.out.println(args.length + "Arguments: ");
 		for (String s : args) {
 			System.out.print(s);
@@ -87,20 +44,42 @@ public class InitJython {
 		if (args.length > 0) {
 			if (args[0].equals("eval"))
 				if (args.length > 1)
-					c.eval(args[1]);
+					c.exec(args[1]);
 				else
-					c.eval("try:\n import fibcalc\n fibcalc.main()\nexcept SystemExit: pass");
-			if (args[0].equals("run"))
+					c.exec("try:\n import fibcalc\n fibcalc.main()\nexcept SystemExit: pass");
+			else if (args[0].equals("run"))
 				if (args.length > 1)
 					c.execfile(args[1]);
 				else
 					c.execfile(InitJython.class
 							.getResourceAsStream("Lib/fibcalc/__init__.py"),
 							"fibcalc/__init__.py");
-			else
-				System.out.println("use either eval or run as first argument");
+			else if (args[0].equals("script")) {
+				String engineName = args[1];
+				ScriptEngine eng = new ScriptEngineManager()
+						.getEngineByName(engineName);
+				if (eng == null) {
+					throw new NullPointerException("Script Engine '"
+							+ engineName + "' not found!");
+				}
+				eng.put("engine", engineName);
+				if (args.length > 2) {
+					System.out.println("result: " + eng.eval(args[2]));
+				} else {
+					System.out.println("write your script below; terminate "
+							+ "with Ctrl-Z (Windows) or Ctrl-D (Unix) ---");
+					try {
+						System.out.println("result: "
+								+ eng.eval(new InputStreamReader(
+										new ConsoleReader().getInput())));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			} else
+				System.out
+						.println("use either eval or run or script as first argument");
 		} else
 			c.interact();
-		System.out.println("Java exiting.");
 	}
 }
