@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<version position="bottom" />
+	<publishDate position="bottom" />
+	<body>
+		<links>
+			<item name="Maven-Jython Home" href="http://mavenjython.sourceforge.net/" />
+		</links>
+		<menu name="Overview">
+			<item name="Introduction" href="index.html" />
+			<item name="Goals" href="plugin-info.html" />
+			<item name="Usage" href="usage.html" />
+			<item name="FAQ" href="faq.html" />
+		</menu>
+
+		<menu name="Examples">
+			<item name="Example/Demo project" href="http://mavenjython.sourceforge.net/compile/demo/" />
+		</menu>
+
+		<menu name="Code">
+			<item name="Javadoc" href="apidocs/index.html" />
+			<item name="Code Repository" href="source-repository.html" />
+			<item name="License" href="license.html" />
+		</menu>
+	</body>
+</project>

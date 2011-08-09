@@ -33,27 +33,31 @@
 			<email>buchner.johannes@gmx.at</email>
 		</developer>
 	</developers>
-	<url>http://maven-python.sourceforge.net/demo/</url>
+	<url>http://mavenjython.sourceforge.net/test/demo/</url>
 	<distributionManagement>
 		<site>
 			<id>sourceforge</id>
-			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/demo/</url>
+			<url>scp://shell.sourceforge.net/home/project-web/mavenjython/htdocs/test/demo/</url>
 		</site>
 		<repository>
 			<id>sourceforge</id>
 			<name>SourceForge</name>
-			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/repo/</url>
+			<url>sftp://frs.sourceforge.net:/home/frs/project/m/ma/mavenjython/maven/releases/</url>
 		</repository>
 	</distributionManagement>
 	<scm>
-		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/maven-python/</connection>
-		<developerConnection>scm:git:ssh://johannesbuchner@maven-python.git.sourceforge.net/gitroot/maven-python/</developerConnection>
-		<url>http://maven-python.git.sourceforge.net/</url>
+		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/mavenjython/</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@mavenjython.git.sourceforge.net/gitroot/mavenjython/</developerConnection>
+		<url>http://mavenjython.git.sourceforge.net/</url>
 	</scm>
 	<repositories>
 		<repository>
+			<id>maven repo</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
 			<id>releases</id>
-			<url>http://maven-python.git.sourceforge.net/repo/</url>
+			<url>http://mavenjython.sourceforge.net/proxy.php?r=</url>
 		</repository>
 	</repositories>
 	<build>
@@ -77,12 +81,32 @@
 			<plugin>
 				<groupId>maven-python-test-plugin</groupId>
 				<artifactId>maven-python-test-plugin-external</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>1.0</version>
 				<executions>
 					<execution>
 						<phase>test</phase>
 						<goals>
 							<goal>python</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -96,4 +120,7 @@
 			<version>4.8.2</version>
 		</dependency>
 	</dependencies>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 </project>

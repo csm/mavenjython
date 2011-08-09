@@ -33,33 +33,35 @@
 			<email>buchner.johannes@gmx.at</email>
 		</developer>
 	</developers>
-	<url>http://maven-python.sourceforge.net/jython/demo/</url>
+
+	<url>http://mavenjython.sourceforge.net/compile/demo/</url>
 	<distributionManagement>
 		<site>
 			<id>sourceforge</id>
-			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/jython/demo/</url>
+			<url>scp://shell.sourceforge.net/home/project-web/mavenjython/htdocs/compile/demo/</url>
 		</site>
 		<repository>
 			<id>sourceforge</id>
 			<name>SourceForge</name>
-			<url>scp://shell.sourceforge.net/home/project-web/maven-python/htdocs/repo/</url>
+			<url>sftp://frs.sourceforge.net:/home/frs/project/m/ma/mavenjython/maven/releases/</url>
 		</repository>
 	</distributionManagement>
 	<scm>
-		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/maven-python/</connection>
-		<developerConnection>scm:git:ssh://johannesbuchner@maven-python.git.sourceforge.net/gitroot/maven-python/</developerConnection>
-		<url>http://maven-python.git.sourceforge.net/</url>
+		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/mavenjython/</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@mavenjython.git.sourceforge.net/gitroot/mavenjython/</developerConnection>
+		<url>http://mavenjython.git.sourceforge.net/</url>
 	</scm>
 	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://mavenjython.sourceforge.net/proxy.php?r=</url>
+		</repository>
 		<repository>
 			<id>maven repo</id>
 			<url>http://repo1.maven.org/maven2/</url>
 		</repository>
-		<repository>
-			<id>releases</id>
-			<url>http://maven-python.git.sourceforge.net/repo/</url>
-		</repository>
 	</repositories>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -103,6 +105,18 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -117,4 +131,7 @@
 			<version>2.5.2</version>
 		</dependency>
 	</dependencies>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 </project>
