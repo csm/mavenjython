@@ -21,9 +21,9 @@ Usage
 		<plugins>
 			...
 			<plugin>
-				<groupId>maven-python-test-plugin</groupId>
+				<groupId>net.sourceforge.mavenjython.test</groupId>
 				<artifactId>maven-python-test-plugin-external</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>plugin-version-here</version>
 				<executions>
 					<execution>
 						<phase>test</phase>

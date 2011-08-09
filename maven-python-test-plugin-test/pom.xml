@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>maven-python-test-plugin</groupId>
+	<groupId>net.sourceforge.mavenjython.test</groupId>
 	<artifactId>maven-python-test-plugin-test</artifactId>
 	<version>1.0</version>
 	<name>Demo project for Python tests Maven Mojo</name>
@@ -79,7 +79,7 @@
 		</testResources>
 		<plugins>
 			<plugin>
-				<groupId>maven-python-test-plugin</groupId>
+				<groupId>net.sourceforge.mavenjython.test</groupId>
 				<artifactId>maven-python-test-plugin-external</artifactId>
 				<version>1.0</version>
 				<executions>

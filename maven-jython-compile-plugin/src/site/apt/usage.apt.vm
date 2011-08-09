@@ -33,7 +33,7 @@ Usage
 		<plugins>
 			...
 			<plugin>
-				<groupId>maven-jython-compile-plugin</groupId>
+				<groupId>net.sourceforge.mavenjython</groupId>
 				<artifactId>maven-jython-compile-plugin</artifactId>
 				<version>your-plugin-version-here</version>
 				<executions>
