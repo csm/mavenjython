@@ -47,9 +47,9 @@
 		</repository>
 	</distributionManagement>
 	<scm>
-		<connection>scm:git:git://maven-python.git.sourceforge.net/gitroot/mavenjython/</connection>
-		<developerConnection>scm:git:ssh://johannesbuchner@mavenjython.git.sourceforge.net/gitroot/mavenjython/</developerConnection>
-		<url>http://mavenjython.git.sourceforge.net/</url>
+		<connection>scm:git:git://git.code.sf.net/p/mavenjython/code</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@git.code.sf.net/p/mavenjython/code</developerConnection>
+		<url>https://sourceforge.net/p/mavenjython/code/</url>
 	</scm>
 	<repositories>
 		<repository>
