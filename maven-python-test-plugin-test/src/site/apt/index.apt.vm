@@ -4,10 +4,10 @@
 
 ${project.name}
 
-  <${project.description}>
+  Demonstrates the use of python tests using {{{http://code.google.com/p/python-nose/}nose}}, behavior tests using {{{https://github.com/rlisagor/freshen}freshen}} (a {{{http://cukes.info/}cucumber}} clone), and plain java junit tests.
   
   This project demonstrates the 
-  {{{Maven-Jython test plugin}http://mavenjython.sourceforge.net/test/}}.
+  {{{http://mavenjython.sourceforge.net/test/}Maven-Jython test plugin}}.
   
 Walkthrough
 
@@ -15,58 +15,48 @@ Walkthrough
  
 *Aims of this demo project
 
-  The resulting jar should start python code, 
-  that interacts with a java class and loads a 3rd party python library (nose) 
+  The codebase of the project, including the python code, should be tested for faults.
+  For this, additionally to junit (normal surefire), nosetests is run against the 
+  python scripts.
  
-*Code
- 
-  We have a Java class, FibSequenceCalc, which generates the Fibonacci sequence.
-  
-  We put our python code as a library, "fibcalc", into Lib.
-  The main() function lists as many Fibonacci numbers as the library nose has entries.
-  
-  InitJython loads up jython in various ways.
-  
 *Configuration
  
-  In the pom, we declare nose as a needed library in the configuration-section of the 
-  {{{maven-jython-compile-plugin}http://mavenjython.sourceforge.net/compile/}}.
+  In the pom, the plugin is referenced as a build plugin, in the test:python phase:goal.
   
+  We declare nose as the tool to use. This can be seen in the configuration-section of the 
+  {{{http://mavenjython.sourceforge.net/compile/}maven-jython-compile-plugin}}.
+  
+  You can use another name here and it will be executed. Putting in "nose" here,
+  or not configuring this part (the default is nose), makes the plugin look for
+  "nosetests.bat". 
+  
+  On unix, provide a shell script (or softlink) named as such 
+  in the PATH. 
+  
+  On windows, make sure the jython\bin folder is in the PATH environment variable.
+
+*Code
+ 
+  In the src/test folder, you will see 
+  
+    *  a JUnit test, 
+    
+    *  a python tests collection,
+    
+    *  a .feature file, which is used to describe the behaviour, and a 
+       steps.py file that defines the language used in the features.
+   
 * Try it out
 
+  Any run that includes the test phase will trigger the plugin.
+  
   run 
 
 ---------------
-  mvn package
+  mvn test
 ---------------
 
-  which should give you the jar-with-dependencies.jar in the target folder. Run it with
-
-
----------------
-  java -jar <filename>.jar <args> 
----------------
-
-  Without arguments, you will get a python console.
+  which should show you that the executable is run and the tests are being 
+  performed, as well as the test results.
   
-  With "eval", you can evaluate your own code in the second argument.
-  
-  With "run", you can run a custom python script.
-  
-  With "script", the integration of python as a Java Scripting Engine is demonstrated. 
 
-  To find out more, look at the source code.
-
-  
-*Other ways
-  
-  If a jython installation is already on the users computer, one might also call
-
----------------
-  jython -jar my.jar
----------------
-
-  This executes the __run__.py code.
-  
-  
- 

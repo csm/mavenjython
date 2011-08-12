@@ -7,7 +7,7 @@ ${project.name}
   <${project.description}>
   
   This project demonstrates the 
-  {{{Maven-Jython compile plugin}http://mavenjython.sourceforge.net/compile/}}.
+  {{{http://mavenjython.sourceforge.net/compile/}Maven-Jython compile plugin}}.
   
 Walkthrough
 
@@ -30,7 +30,7 @@ Walkthrough
 *Configuration
  
   In the pom, we declare nose as a needed library in the configuration-section of the 
-  {{{maven-jython-compile-plugin}http://mavenjython.sourceforge.net/compile/}}.
+  {{{http://mavenjython.sourceforge.net/compile/}maven-jython-compile-plugin}}.
   
 * Try it out
 

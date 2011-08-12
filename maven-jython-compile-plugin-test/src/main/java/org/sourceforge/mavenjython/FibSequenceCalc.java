@@ -1,4 +1,4 @@
-package maven.jython.compile.plugin.test;
+package org.sourceforge.mavenjython;
 
 import java.util.Iterator;
 

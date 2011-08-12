@@ -1,3 +1,4 @@
+package org.sourceforge.mavenjython;
 import java.util.Properties;
 
 import org.python.core.Py;

@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.mavenjython</groupId>
-	<artifactId>maven-jython-compile-plugin</artifactId>
+	<artifactId>jython-compile-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<version>1.0</version>
 	<name>Maven Jython packaging</name>
@@ -23,7 +23,7 @@
 		</license>
 		<license>
 			<name>Apache Public License</name>
-			<url>http://www.apache.org/licenses/apache.txt</url>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>

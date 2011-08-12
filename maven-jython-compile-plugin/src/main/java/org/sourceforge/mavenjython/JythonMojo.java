@@ -1,4 +1,4 @@
-package com.jakeapp.python;
+package org.sourceforge.mavenjython;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.

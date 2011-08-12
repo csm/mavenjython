@@ -33,7 +33,7 @@ Usage
 		<plugins>
 			...
 			<plugin>
-				<groupId>net.sourceforge.mavenjython</groupId>
+				<groupId>org.sourceforge.mavenjython</groupId>
 				<artifactId>maven-jython-compile-plugin</artifactId>
 				<version>your-plugin-version-here</version>
 				<executions>
@@ -65,7 +65,7 @@ Usage
   
     Write a Jython initialization class to call the python interpreter or to make a 
     python console. Look at the 
-    {{{demo project}http://mavenjython.sourceforge.net/compile/demo/}} for inspiration. 
+    {{{http://mavenjython.sourceforge.net/compile/demo/}demo project}} for inspiration. 
 
 What does this plugin do?
 

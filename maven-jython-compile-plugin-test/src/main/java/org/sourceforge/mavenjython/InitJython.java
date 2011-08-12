@@ -1,3 +1,4 @@
+package org.sourceforge.mavenjython;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
