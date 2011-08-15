@@ -58,7 +58,7 @@ public class JythonMojo extends AbstractMojo {
 	/**
 	 * Libraries needed to include.
 	 * 
-	 * @parameter expression="${jython.libraries}"
+	 * @parameter
 	 * @optional
 	 */
 	private List<String> libraries;

@@ -51,17 +51,6 @@
 		<developerConnection>scm:git:ssh://johannesbuchner@git.code.sf.net/p/mavenjython/code</developerConnection>
 		<url>https://sourceforge.net/p/mavenjython/code/</url>
 	</scm>
-	<repositories>
-		<repository>
-			<id>maven repo</id>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>releases</id>
-			<url>http://mavenjython.sourceforge.net/proxy.php?r=</url>
-		</repository>
-	</repositories>
-	
 	<build>
 		<plugins>
 			<plugin>
