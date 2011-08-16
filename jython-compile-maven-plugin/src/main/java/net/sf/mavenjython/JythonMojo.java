@@ -1,4 +1,4 @@
-package org.sourceforge.mavenjython;
+package net.sf.mavenjython;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.

@@ -1,7 +1,7 @@
 
 print "Python started."
 
-from org.sourceforge.mavenjython.test import FibSequenceCalc
+from net.sf.mavenjython.test import FibSequenceCalc
 
 import nose
 

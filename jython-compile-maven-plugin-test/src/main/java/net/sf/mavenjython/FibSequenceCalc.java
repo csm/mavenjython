@@ -1,4 +1,4 @@
-package org.sourceforge.mavenjython;
+package net.sf.mavenjython;
 
 import java.util.Iterator;
 
