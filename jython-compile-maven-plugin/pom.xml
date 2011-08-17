@@ -4,7 +4,7 @@
 	<groupId>net.sf.mavenjython</groupId>
 	<artifactId>jython-compile-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>1.0</version>
+	<version>1.1</version>
 	<name>Maven Jython packaging</name>
 	<description>
 		Allows your project to integrate jython/python scripting 
@@ -36,7 +36,7 @@
 	</developers>
 
 
-	<url>http://maven-python.sourceforge.net/compile/</url>
+	<url>http://mavenjython.sourceforge.net/compile/</url>
 	<distributionManagement>
 		<site>
 			<id>sourceforge</id>

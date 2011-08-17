@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.mavenjython</groupId>
 	<artifactId>jython-compile-maven-plugin-test</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 	<name>Demo project for Jython compilation Maven Mojo</name>
 
 	<description>
@@ -56,7 +56,7 @@
 			<plugin>
 				<groupId>net.sf.mavenjython</groupId>
 				<artifactId>jython-compile-maven-plugin</artifactId>
-				<version>1.0</version>
+				<version>1.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
