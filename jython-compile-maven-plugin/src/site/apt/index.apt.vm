@@ -13,11 +13,11 @@ ${project.name}
   This plugin will allow you to integrate a modern jython installation to your project, 
   to 
   
-     - allow the user to use a python shell.
+     * allow the user to use a python shell.
      
-     - give you the possibility to program in python (with access to java)
+     * give you the possibility to program in python (with access to java)
      
-     - use python libraries
+     * use python libraries
   
 
 * Goals Overview
