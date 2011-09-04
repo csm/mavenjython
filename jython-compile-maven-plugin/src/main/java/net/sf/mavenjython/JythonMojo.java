@@ -48,7 +48,9 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @phase compile
  */
 public class JythonMojo extends AbstractMojo {
+
 	private static final String SETUPTOOLS_EGG = "setuptools-0.6c11-py2.5.egg";
+
 	/**
 	 * @parameter expression="${project.build.outputDirectory}"
 	 * @required
@@ -84,26 +86,32 @@ public class JythonMojo extends AbstractMojo {
 	 * Lib/
 	 */
 	private File libdir;
+
 	/**
 	 * Lib/ in the output
 	 */
 	private File installlibdir;
+
 	/**
 	 * The Jython dependency
 	 */
 	private DefaultArtifact jythonArtifact;
+
 	/**
 	 * The setuptools jar resource
 	 */
 	private URL setuptoolsResource;
+
 	/**
 	 * The setuptools jar, once copied from the resource
 	 */
 	private File setuptoolsJar;
+
 	/**
 	 * Lib/site-packages
 	 */
 	private File sitepackagesdir;
+
 	/**
 	 * Where packages are downloaded and built
 	 */
@@ -177,12 +185,17 @@ public class JythonMojo extends AbstractMojo {
 		}
 		getLog().info("installing easy_install done");
 
-		getLog().info("installing requested libraries");
-		// then we need to call easy_install to install the other dependencies.
-		runJythonScriptOnInstall(temporaryBuildDirectory,
-				getEasyInstallArgs("Lib/site-packages/" + SETUPTOOLS_EGG
-						+ "/easy_install.py"));
-		getLog().info("installing requested libraries done");
+		if (libraries == null) {
+			getLog().info("no python libraries requested");
+		} else {
+			getLog().info("installing requested python libraries");
+			// then we need to call easy_install to install the other
+			// dependencies.
+			runJythonScriptOnInstall(temporaryBuildDirectory,
+					getEasyInstallArgs("Lib/site-packages/" + SETUPTOOLS_EGG
+							+ "/easy_install.py"));
+			getLog().info("installing requested python libraries done");
+		}
 
 		getLog().info("copying requested libraries");
 		/**
@@ -251,7 +264,7 @@ public class JythonMojo extends AbstractMojo {
 		// and it should run easy_install
 		args.add(easy_install_script);
 		// with some arguments
-		//args.add("--optimize");
+		// args.add("--optimize");
 		// args.add("--install-dir");
 		// args.add(outputDirectory.getAbsolutePath());
 		// and cache here
@@ -336,8 +349,9 @@ public class JythonMojo extends AbstractMojo {
 				if (OVERRIDE || !destFile.exists()) {
 					destFile.getParentFile().mkdirs();
 					try {
-						IOUtils.copy(ja.getInputStream(el),
-								new FileOutputStream(destFile));
+						FileOutputStream fo = new FileOutputStream(destFile);
+						IOUtils.copy(ja.getInputStream(el), fo);
+						fo.close();
 					} catch (IOException e) {
 						throw new MojoExecutionException("extracting "
 								+ el.getName()
@@ -370,6 +384,7 @@ public class JythonMojo extends AbstractMojo {
 
 	private void copyIO(final InputStream input, final OutputStream output) {
 		new Thread(new Runnable() {
+
 			public void run() {
 				try {
 					IOUtils.copy(input, output);

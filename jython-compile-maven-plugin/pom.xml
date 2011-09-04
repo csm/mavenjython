@@ -4,7 +4,7 @@
 	<groupId>net.sf.mavenjython</groupId>
 	<artifactId>jython-compile-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>1.1</version>
+	<version>1.2</version>
 	<name>Maven Jython packaging</name>
 	<description>
 		Allows your project to integrate jython/python scripting 
