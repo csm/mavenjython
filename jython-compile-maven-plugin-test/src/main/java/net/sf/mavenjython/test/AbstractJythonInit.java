@@ -1,4 +1,4 @@
-package net.sf.mavenjython;
+package net.sf.mavenjython.test;
 import java.util.Properties;
 
 import org.python.core.Py;

@@ -80,7 +80,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>net.sf.mavenjython.InitJython</mainClass>
+							<mainClass>net.sf.mavenjython.test.InitJython</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

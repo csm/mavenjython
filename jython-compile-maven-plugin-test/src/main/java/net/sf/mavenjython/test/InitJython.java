@@ -1,4 +1,4 @@
-package net.sf.mavenjython;
+package net.sf.mavenjython.test;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -32,7 +32,7 @@ public class InitJython extends AbstractJythonInit {
 	}
 
 	public void run() throws ScriptException {
-		System.out.println(args.length + "Arguments: ");
+		System.out.print(args.length + " Arguments: ");
 		for (String s : args) {
 			System.out.print(s);
 			System.out.print(", ");
